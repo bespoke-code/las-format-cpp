@@ -6,15 +6,11 @@
 #define LAS_READER_POINTDATARECORD_H
 
 #include <fstream>
+#include "LAS_Structs.h"
 
 namespace LAS {
 
-    enum struct POINT_DATA_SIZE : int {
-        POINT_DATA_FORMAT_0_SIZE = 20,
-        POINT_DATA_FORMAT_1_SIZE = 28,
-        POINT_DATA_FORMAT_2_SIZE = 26,
-        POINT_DATA_FORMAT_3_SIZE = 34
-    };
+
 
     struct scan_data {
         unsigned short return_no:3;
@@ -56,9 +52,9 @@ namespace LAS {
         int getY();
         int getZ();
 
-        void setGPSTime(std::fstream *fileStream);
-        void setRGB(std::fstream *fileStream);
-
+        void setGPSTime(std::fstream* fileStream);
+        void setRGB(std::fstream* fileStream);
+        void saveTo(std::ofstream* outputStream, LAS::POINT_DATA_FORMAT format);
     };
 
 }

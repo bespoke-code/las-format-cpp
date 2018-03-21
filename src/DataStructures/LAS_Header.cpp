@@ -6,6 +6,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include "LAS_Structs.h"
 
 namespace LAS {
 
@@ -94,5 +95,12 @@ namespace LAS {
         if (axis == LAS::AXIS::X_AXIS) return this->x_max;
         if (axis == LAS::AXIS::Y_AXIS) return this->y_max;
         if (axis == LAS::AXIS::Z_AXIS) return this->z_max;
+    }
+
+    void LAS_Header::saveTo(std::ofstream *outputFile) {
+        if(!outputFile->is_open()){
+            std::cout << "Stream is not open! NOT writing to disk."<<std::endl;
+        }
+        outputFile->write((const char*)this, sizeof(LAS::LAS_Header));
     }
 }

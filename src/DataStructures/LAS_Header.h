@@ -7,6 +7,7 @@
 
 #include <cstring>
 #include <fstream>
+#include "LAS_Structs.h"
 
 namespace LAS {
 
@@ -26,13 +27,6 @@ namespace LAS {
         X_AXIS = 0,
         Y_AXIS,
         Z_AXIS
-    };
-
-    enum struct POINT_DATA_FORMAT : unsigned char {
-        FORMAT_0 = 0,
-        FORMAT_1,
-        FORMAT_2,
-        FORMAT_3
     };
 
 
@@ -85,6 +79,8 @@ namespace LAS {
         unsigned int getNumberOfPointRecords();
         unsigned int getPointDataRecordLength();
         unsigned int getNumberOfPointsByReturn(int ret);
+
+        void saveTo(std::ofstream *outputFile);
 
     };
 }

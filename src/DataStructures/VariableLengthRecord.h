@@ -22,7 +22,9 @@ namespace LAS {
         VariableLengthRecord(std::fstream *fileStream, int position=227);
         ~VariableLengthRecord();
         char *getContents();
+        void saveTo(std::ofstream* outputStream);
     };
 }
+
 
 #endif //LAS_READER_VARIABLELENGTHRECORD_H

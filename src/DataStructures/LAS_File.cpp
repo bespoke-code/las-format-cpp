@@ -16,29 +16,35 @@ namespace LAS {
         fileStream->seekp(header->getOffsetToPointData());
 
         PointDataRecord point;
+
+        #ifdef DEBUG
         std::cout<<"Reading points..."<<std::endl;
-        for(unsigned int i=0; i<4; i++)
-        for(unsigned int j=0; j<header->getNumberOfPointsByReturn(i); j++){
-            fileStream->read((char*)&point, (std::streamsize) LAS::POINT_DATA_SIZE::POINT_DATA_FORMAT_0_SIZE);
+        #endif
 
-            switch (header->getPointDataFormat()) {
-                case LAS::POINT_DATA_FORMAT::FORMAT_0:
-                    break;
-                case LAS::POINT_DATA_FORMAT::FORMAT_1:
-                    point.setGPSTime(fileStream);
-                    break;
-                case LAS::POINT_DATA_FORMAT::FORMAT_2:
-                    point.setRGB(fileStream);
-                    break;
-                case LAS::POINT_DATA_FORMAT::FORMAT_3:
-                    point.setGPSTime(fileStream);
-                    point.setRGB(fileStream);
-                    break;
-                default:
-                    break;
+        for(unsigned int i=0; i<4; i++) {
+            for(unsigned int j=0; j<header->getNumberOfPointsByReturn(i); j++) {
+                fileStream->read((char *) &point, (std::streamsize) LAS::POINT_DATA_SIZE::POINT_DATA_FORMAT_0_SIZE);
+
+                switch (header->getPointDataFormat()) {
+                    case LAS::POINT_DATA_FORMAT::FORMAT_0:
+                        break;
+                    case LAS::POINT_DATA_FORMAT::FORMAT_1:
+                        point.setGPSTime(fileStream);
+                        break;
+                    case LAS::POINT_DATA_FORMAT::FORMAT_2:
+                        point.setRGB(fileStream);
+                        break;
+                    case LAS::POINT_DATA_FORMAT::FORMAT_3:
+                        point.setGPSTime(fileStream);
+                        point.setRGB(fileStream);
+                        break;
+                    default:
+                        break;
+                }
             }
-
-                std::cout<<"File pointer at: "<<fileStream->tellp()<<std::endl;
+            #ifdef DEBUG
+            std::cout<<"File pointer at: "<<fileStream->tellp()<<std::endl;
+            #endif
             points.push_back(point);
         }
     }
@@ -47,10 +53,21 @@ namespace LAS {
         delete header;
     }
 
-    void LAS_File::addPoint(PointDataRecord point) {
-        points.push_back(point);
+    void LAS_File::addPoint(PointDataRecord *point) {
+        points.push_back(*point);
     }
 
+    void LAS_File::saveTo(std::ofstream* outputStream) {
+        this->header->saveTo(outputStream);
+        for(std::vector<LAS::VariableLengthRecord>::iterator i=records.begin(); i!=records.end(); ++i){
+            i->saveTo(outputStream);
+        }
+        for(std::vector<LAS::PointDataRecord>::iterator i=points.begin(); i!=points.end(); ++i){
+            i->saveTo(outputStream, header->getPointDataFormat());
+        }
+    }
+
+    #ifdef DEBUG
     void LAS_File::debug_test() {
         int count=0;
         for(std::vector<LAS::PointDataRecord>::iterator i=points.begin(); i!=points.end() || count<10; ++i){
@@ -62,4 +79,5 @@ namespace LAS {
             count++;
         }
     }
+    #endif
 }
