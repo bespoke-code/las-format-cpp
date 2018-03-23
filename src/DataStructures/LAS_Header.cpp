@@ -6,11 +6,41 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
+
 #include "LAS_Structs.h"
 
 namespace LAS {
 
     LAS_Header::LAS_Header() {
+        std::strncpy(signature, "LASF", 4);
+        source_id = 0;
+        global_encoding = 0;
+        version.major = 1;
+        version.minor = 2;
+        std::strcpy(system_identifier, "");
+        std::strcpy(generating_software, "las-format-cpp-library\0");
+        std::time_t timer = std::time(NULL);
+        std::tm *timePtr = std::localtime(&timer);
+        creation_day = (unsigned short) timePtr->tm_yday;
+        creation_year = (unsigned short) (timePtr->tm_year + 1900);
+        delete timePtr;
+        size = 227;
+        offset_to_point_data = 227;
+        variable_length_records_count = 0;
+        point_data_format = LAS::POINT_DATA_FORMAT::FORMAT_0;
+        point_data_record_length = (unsigned short) LAS::POINT_DATA_SIZE::POINT_DATA_FORMAT_0_SIZE;
+        number_of_point_records = 0;
+        for(int i=0; i<5; i++)
+            number_of_points_by_return[i] = 0;
+        x_scale_factor = 0.001;
+        y_scale_factor = 0.001;
+        z_scale_factor = 0.001;
+        x_offset = 0.0;
+        y_offset = 0.0;
+        z_offset = 0.0;
+        x_max = x_min = y_max = y_min = z_max = z_min = 0.0;
     }
 
     LAS_Header::LAS_Header(std::fstream* fileStream) {
@@ -102,5 +132,17 @@ namespace LAS {
             std::cout << "Stream is not open! NOT writing to disk."<<std::endl;
         }
         outputFile->write((const char*)this, sizeof(LAS::LAS_Header));
+    }
+
+    void LAS_Header::setPointCount(unsigned int amount) {
+        this->number_of_point_records = amount;
+    }
+
+    void LAS_Header::incrementPointCount() {
+        ++this->number_of_point_records;
+    }
+
+    void LAS_Header::decrementPointCount() {
+        --this->number_of_point_records;
     }
 }

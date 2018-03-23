@@ -10,6 +10,10 @@
 
 namespace LAS {
 
+    LAS_File::LAS_File() {
+        this->header = new LAS_Header();
+    }
+
     LAS_File::LAS_File(std::fstream *fileStream) {
         this->header = new LAS_Header();
         fileStream->read((char*)header, sizeof(LAS_Header));
@@ -55,6 +59,7 @@ namespace LAS {
 
     void LAS_File::addPoint(PointDataRecord *point) {
         points.push_back(*point);
+        header->incrementPointCount();
     }
 
     void LAS_File::saveTo(std::ofstream* outputStream) {

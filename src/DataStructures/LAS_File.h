@@ -20,6 +20,7 @@ namespace LAS {
         std::vector<LAS::PointDataRecord> points;
 
     public:
+        LAS_File();
         LAS_File(std::fstream* fileStream);
         ~LAS_File();
         void addPoint(PointDataRecord* point);

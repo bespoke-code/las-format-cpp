@@ -80,6 +80,10 @@ namespace LAS {
         unsigned int getPointDataRecordLength();
         unsigned int getNumberOfPointsByReturn(int ret);
 
+        void setPointCount(unsigned int amount);
+        inline void incrementPointCount();
+        inline void decrementPointCount();
+
         void saveTo(std::ofstream *outputFile);
 
     };
