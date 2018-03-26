@@ -3,6 +3,7 @@
 //
 
 #include "LAS_File.h"
+#include "LAS_Header.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -59,7 +60,22 @@ namespace LAS {
 
     void LAS_File::addPoint(PointDataRecord *point) {
         points.push_back(*point);
-        header->incrementPointCount();
+
+        if(point->getX() > header->getMaximum(LAS::AXIS::X_AXIS))
+            header->setMaximum(LAS::AXIS::X_AXIS, point->getX());
+        if(point->getY() > header->getMaximum(LAS::AXIS::Y_AXIS))
+            header->setMaximum(LAS::AXIS::Y_AXIS, point->getY());
+        if(point->getZ() > header->getMaximum(LAS::AXIS::Z_AXIS))
+            header->setMaximum(LAS::AXIS::Z_AXIS, point->getZ());
+
+        if(point->getX() < header->getMinimum(LAS::AXIS::X_AXIS))
+            header->setMinimum(LAS::AXIS::X_AXIS, point->getX());
+        if(point->getY() < header->getMinimum(LAS::AXIS::Y_AXIS))
+            header->setMinimum(LAS::AXIS::Y_AXIS, point->getY());
+        if(point->getZ() < header->getMinimum(LAS::AXIS::Z_AXIS))
+            header->setMinimum(LAS::AXIS::Z_AXIS, point->getZ());
+
+        this->header->incrementPointCount();
     }
 
     void LAS_File::saveTo(std::ofstream* outputStream) {

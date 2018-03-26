@@ -49,4 +49,20 @@ namespace LAS {
         }
     }
 
+    void PointDataRecord::setGPSTime(double time) {
+        this->gps_time = time;
+    }
+
+    void PointDataRecord::setRGB(LAS::Colour& rgb) {
+        this->colour.red = rgb.red;
+        this->colour.green = rgb.green;
+        this->colour.blue = rgb.blue;
+    }
+
+    void PointDataRecord::setCoordinates(int x, int y, int z) {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+
 }

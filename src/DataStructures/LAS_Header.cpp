@@ -139,10 +139,32 @@ namespace LAS {
     }
 
     void LAS_Header::incrementPointCount() {
-        ++this->number_of_point_records;
+        ++(this->number_of_point_records);
     }
 
     void LAS_Header::decrementPointCount() {
-        --this->number_of_point_records;
+        --(this->number_of_point_records);
+    }
+
+    void LAS_Header::setMinimum(AXIS axis, double min) {
+        switch (axis) {
+            case LAS::AXIS::X_AXIS:
+                this->x_min = min; break;
+            case LAS::AXIS::Y_AXIS:
+                this->y_min = min; break;
+            case LAS::AXIS::Z_AXIS:
+                this->z_min = min; break;
+        }
+    }
+
+    void LAS_Header::setMaximum(AXIS axis, double max) {
+        switch (axis) {
+            case LAS::AXIS::X_AXIS:
+                this->x_max = max; break;
+            case LAS::AXIS::Y_AXIS:
+                this->y_max = max; break;
+            case LAS::AXIS::Z_AXIS:
+                this->z_max = max; break;
+        }
     }
 }

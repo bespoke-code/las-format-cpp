@@ -81,8 +81,10 @@ namespace LAS {
         unsigned int getNumberOfPointsByReturn(int ret);
 
         void setPointCount(unsigned int amount);
-        inline void incrementPointCount();
-        inline void decrementPointCount();
+        void incrementPointCount();
+        void decrementPointCount();
+        void setMinimum(AXIS axis, double min);
+        void setMaximum(AXIS axis, double max);
 
         void saveTo(std::ofstream *outputFile);
 

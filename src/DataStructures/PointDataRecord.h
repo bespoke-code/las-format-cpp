@@ -52,8 +52,14 @@ namespace LAS {
         int getY();
         int getZ();
 
+        void setCoordinates(int x, int y, int z);
+
         void setGPSTime(std::fstream* fileStream);
+        void setGPSTime(double time);
+
         void setRGB(std::fstream* fileStream);
+        void setRGB(LAS::Colour& colour);
+
         void saveTo(std::ofstream* outputStream, LAS::POINT_DATA_FORMAT format);
     };
 
