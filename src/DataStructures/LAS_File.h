@@ -26,6 +26,8 @@ namespace LAS {
         void addPoint(PointDataRecord* point);
         void saveTo(std::ofstream* outputStream);
 
+        void setPointFormat(LAS::POINT_DATA_FORMAT format);
+
         #ifdef DEBUG
         void debug_test();
         #endif

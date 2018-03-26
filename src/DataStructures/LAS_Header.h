@@ -80,6 +80,8 @@ namespace LAS {
         unsigned int getPointDataRecordLength();
         unsigned int getNumberOfPointsByReturn(int ret);
 
+        void setPointFormat(LAS::POINT_DATA_FORMAT format);
+
         void setPointCount(unsigned int amount);
         void incrementPointCount();
         void decrementPointCount();

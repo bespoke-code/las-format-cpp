@@ -25,7 +25,6 @@ namespace LAS {
         std::tm *timePtr = std::localtime(&timer);
         creation_day = (unsigned short) timePtr->tm_yday;
         creation_year = (unsigned short) (timePtr->tm_year + 1900);
-        delete timePtr;
         size = 227;
         offset_to_point_data = 227;
         variable_length_records_count = 0;
@@ -136,14 +135,17 @@ namespace LAS {
 
     void LAS_Header::setPointCount(unsigned int amount) {
         this->number_of_point_records = amount;
+        this->number_of_points_by_return[0] = amount;
     }
 
     void LAS_Header::incrementPointCount() {
         ++(this->number_of_point_records);
+        ++(this->number_of_points_by_return[0]);
     }
 
     void LAS_Header::decrementPointCount() {
         --(this->number_of_point_records);
+        --(this->number_of_points_by_return[0]);
     }
 
     void LAS_Header::setMinimum(AXIS axis, double min) {
@@ -166,5 +168,9 @@ namespace LAS {
             case LAS::AXIS::Z_AXIS:
                 this->z_max = max; break;
         }
+    }
+
+    void LAS_Header::setPointFormat(POINT_DATA_FORMAT format) {
+        this->point_data_format = format;
     }
 }

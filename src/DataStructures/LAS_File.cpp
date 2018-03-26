@@ -88,7 +88,11 @@ namespace LAS {
         }
     }
 
-    #ifdef DEBUG
+    void LAS_File::setPointFormat(POINT_DATA_FORMAT format) {
+        this->header->setPointFormat(format);
+    }
+
+#ifdef DEBUG
     void LAS_File::debug_test() {
         int count=0;
         for(std::vector<LAS::PointDataRecord>::iterator i=points.begin(); i!=points.end() || count<10; ++i){
