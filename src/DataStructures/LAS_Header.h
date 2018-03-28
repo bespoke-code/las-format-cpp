@@ -85,6 +85,7 @@ namespace LAS {
         void setPointCount(unsigned int amount);
         void incrementPointCount();
         void decrementPointCount();
+        void increasePointDataOffset(unsigned int amount);
         void setMinimum(AXIS axis, double min);
         void setMaximum(AXIS axis, double max);
 

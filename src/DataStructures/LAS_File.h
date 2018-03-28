@@ -24,6 +24,7 @@ namespace LAS {
         LAS_File(std::fstream* fileStream);
         ~LAS_File();
         void addPoint(PointDataRecord* point);
+        void addVariableRecord(VariableLengthRecord* vlrecord);
         void saveTo(std::ofstream* outputStream);
 
         void setPointFormat(LAS::POINT_DATA_FORMAT format);

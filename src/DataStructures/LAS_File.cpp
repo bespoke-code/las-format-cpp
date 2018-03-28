@@ -92,6 +92,11 @@ namespace LAS {
         this->header->setPointFormat(format);
     }
 
+    void LAS_File::addVariableRecord(VariableLengthRecord *vlrecord) {
+        this->header->increasePointDataOffset(vlrecord->size());
+        this->records.push_back(*vlrecord);
+    }
+
 #ifdef DEBUG
     void LAS_File::debug_test() {
         int count=0;

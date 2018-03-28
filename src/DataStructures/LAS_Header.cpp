@@ -173,4 +173,8 @@ namespace LAS {
     void LAS_Header::setPointFormat(POINT_DATA_FORMAT format) {
         this->point_data_format = format;
     }
+
+    void LAS_Header::increasePointDataOffset(unsigned int amount) {
+        this->offset_to_point_data += amount;
+    }
 }
