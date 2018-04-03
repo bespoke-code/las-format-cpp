@@ -7,7 +7,7 @@
 
 namespace LAS {
 
-    VariableLengthRecord::VariableLengthRecord(std::fstream* fileStream, int position) {
+    VariableLengthRecord::VariableLengthRecord(std::fstream* fileStream, long int position) {
         char *tmp;
         tmp = new char[54];
         fileStream->seekp(position);

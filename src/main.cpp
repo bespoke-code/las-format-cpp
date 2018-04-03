@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv) {
 
-    std::fstream fileStream("/home/vdx2/Desktop/chasha-lavche-3D.las", std::ios::binary | std::ios::in);
+    std::fstream fileStream("/home/vdx2/Desktop/LAS/libLAS_1.2.las", std::ios::binary | std::ios::in);
     LAS::LAS_File las_file(&fileStream);
     fileStream.close();
 

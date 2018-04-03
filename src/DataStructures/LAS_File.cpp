@@ -18,7 +18,26 @@ namespace LAS {
     LAS_File::LAS_File(std::fstream *fileStream) {
         this->header = new LAS_Header();
         fileStream->read((char*)header, sizeof(LAS_Header));
+        long int pos = fileStream->tellp();
+        std::cout << pos << " " << header->getOffsetToPointData() << std::endl;
+
+
+        int totalVRLs = 1;
         fileStream->seekp(header->getOffsetToPointData());
+
+        LAS::VariableLengthRecord vrl_geokey(fileStream, fileStream->tellp());
+        if(vrl_geokey.type() == LAS::RECORD_TYPE::GEO_KEY_DIRECTORY_TAG){
+            LAS::GeoKeys* geokeys = (LAS::GeoKeys*) vrl_geokey.getContents();
+            totalVRLs = geokeys->numberOfKeys;
+            addVariableRecord(&vrl_geokey);
+            while(totalVRLs!=0)
+            {
+                LAS::VariableLengthRecord vrl(fileStream, fileStream->tellp());
+                addVariableRecord(&vrl);
+                totalVRLs--;
+            }
+        }
+
 
         PointDataRecord point;
 
@@ -46,11 +65,12 @@ namespace LAS {
                     default:
                         break;
                 }
+                points.push_back(point);
             }
             #ifdef DEBUG
             std::cout<<"File pointer at: "<<fileStream->tellp()<<std::endl;
             #endif
-            points.push_back(point);
+
         }
     }
 

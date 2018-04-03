@@ -66,9 +66,9 @@ namespace LAS {
         offset_to_point_data = *((unsigned int*)(item + 96));
         variable_length_records_count = *((unsigned int*)(item + 100));
         point_data_format = (POINT_DATA_FORMAT) *((unsigned char*)(item + 104));
-        point_data_record_length = *((unsigned char*)(item + 105));
+        point_data_record_length = *((unsigned short*)(item + 105));
         number_of_point_records = *((unsigned int*)(item + 107));
-        for(int i=111, index=0; i<130 || index<5; i+=8, index++) {
+        for(int i=111, index=0; i<130 || index<5; i+=sizeof(int), index++) {
             number_of_points_by_return[index] = *((unsigned int*)(item + i));
         }
         x_scale_factor = *((double*)(item + 131));

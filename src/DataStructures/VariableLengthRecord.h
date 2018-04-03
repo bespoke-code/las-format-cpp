@@ -38,7 +38,7 @@ namespace LAS {
         void *contents;
 
     public:
-        VariableLengthRecord(std::fstream *fileStream, int position=227);
+        VariableLengthRecord(std::fstream *fileStream, long int position=227);
         VariableLengthRecord(LAS::RECORD_TYPE type);
         ~VariableLengthRecord();
         char *getContents();
