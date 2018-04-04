@@ -8,10 +8,6 @@ int main(int argc, char **argv) {
     LAS::LAS_File las_file(&fileStream);
     fileStream.close();
 
-    #ifdef DEBUG
-    las_file.debug_test();
-    #endif
-
     LAS::LAS_File randomPoints;
     LAS::PointDataRecord point;
 

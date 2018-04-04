@@ -14,7 +14,7 @@ namespace LAS {
         FORMAT_3
     };
 
-    enum struct POINT_DATA_SIZE : int {
+    enum struct POINT_DATA_SIZE : unsigned short {
         POINT_DATA_FORMAT_0_SIZE = 20,
         POINT_DATA_FORMAT_1_SIZE = 28,
         POINT_DATA_FORMAT_2_SIZE = 26,

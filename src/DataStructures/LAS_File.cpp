@@ -16,8 +16,8 @@ namespace LAS {
     }
 
     LAS_File::LAS_File(std::fstream *fileStream) {
-        this->header = new LAS_Header();
-        fileStream->read((char*)header, sizeof(LAS_Header));
+        this->header = new LAS_Header(fileStream);
+        //fileStream->read((char*)header, sizeof(LAS_Header));
         long int pos = fileStream->tellp();
         std::cout << pos << " " << header->getOffsetToPointData() << std::endl;
 
