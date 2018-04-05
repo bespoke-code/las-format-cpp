@@ -7,10 +7,9 @@
 
 namespace LAS {
 
-    VariableLengthRecord::VariableLengthRecord(std::fstream* fileStream, long int position) {
+    VariableLengthRecord::VariableLengthRecord(std::fstream* fileStream) {
         char *tmp;
         tmp = new char[54];
-        fileStream->seekp(position);
         fileStream->read(tmp, 54);
         reserved = *((unsigned short*)(tmp));
         std::strncpy(user_id, (tmp+2), 16);

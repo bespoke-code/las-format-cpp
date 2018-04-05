@@ -131,6 +131,7 @@ namespace LAS {
         if(!outputFile->is_open()){
             std::cout << "Stream is not open! NOT writing to disk."<<std::endl;
         }
+        //TODO: change this to something more sane?
         outputFile->write((const char*)this, sizeof(LAS::LAS_Header));
     }
 

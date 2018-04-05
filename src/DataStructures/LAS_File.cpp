@@ -25,14 +25,14 @@ namespace LAS {
         int totalVRLs = 1;
         fileStream->seekp(header->getOffsetToPointData());
 
-        LAS::VariableLengthRecord vrl_geokey(fileStream, fileStream->tellp());
+        LAS::VariableLengthRecord vrl_geokey(fileStream);
         if(vrl_geokey.type() == LAS::RECORD_TYPE::GEO_KEY_DIRECTORY_TAG){
             auto geokeys = (LAS::GeoKeys*) vrl_geokey.getContents();
             totalVRLs = geokeys->numberOfKeys;
             addVariableRecord(&vrl_geokey);
             while(totalVRLs!=0)
             {
-                LAS::VariableLengthRecord vrl(fileStream, fileStream->tellp());
+                LAS::VariableLengthRecord vrl(fileStream);
                 addVariableRecord(&vrl);
                 totalVRLs--;
             }
@@ -49,16 +49,17 @@ namespace LAS {
                     case LAS::POINT_DATA_FORMAT::FORMAT_0:
                         break;
                     case LAS::POINT_DATA_FORMAT::FORMAT_1:
+                        // setting GPS time only
                         point.setGPSTime(fileStream);
                         break;
                     case LAS::POINT_DATA_FORMAT::FORMAT_2:
+                        // setting RGB only
                         point.setRGB(fileStream);
                         break;
                     case LAS::POINT_DATA_FORMAT::FORMAT_3:
+                        // order is important!
                         point.setGPSTime(fileStream);
                         point.setRGB(fileStream);
-                        break;
-                    default:
                         break;
                 }
                 points.push_back(point);
@@ -106,7 +107,7 @@ namespace LAS {
     }
 
     void LAS_File::addVariableRecord(VariableLengthRecord *vlrecord) {
-        this->header->increasePointDataOffset(vlrecord->size());
+        this->header->increasePointDataOffset((unsigned int) vlrecord->size());
         this->records.push_back(*vlrecord);
     }
 }

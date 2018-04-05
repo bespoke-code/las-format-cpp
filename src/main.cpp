@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <random>
 #include "DataStructures/LAS_File.h"
 
 int main(int argc, char **argv) {
@@ -13,7 +14,7 @@ int main(int argc, char **argv) {
 
     int x, y, z;
     // double gpsTime;
-    LAS::Colour color;
+    LAS::Colour color{0, 0, 0};
 
     randomPoints.setPointFormat(LAS::POINT_DATA_FORMAT::FORMAT_2);
 
