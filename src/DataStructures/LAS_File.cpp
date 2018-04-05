@@ -27,7 +27,7 @@ namespace LAS {
 
         LAS::VariableLengthRecord vrl_geokey(fileStream, fileStream->tellp());
         if(vrl_geokey.type() == LAS::RECORD_TYPE::GEO_KEY_DIRECTORY_TAG){
-            LAS::GeoKeys* geokeys = (LAS::GeoKeys*) vrl_geokey.getContents();
+            auto geokeys = (LAS::GeoKeys*) vrl_geokey.getContents();
             totalVRLs = geokeys->numberOfKeys;
             addVariableRecord(&vrl_geokey);
             while(totalVRLs!=0)
@@ -40,10 +40,6 @@ namespace LAS {
 
 
         PointDataRecord point;
-
-        #ifdef DEBUG
-        std::cout<<"Reading points..."<<std::endl;
-        #endif
 
         for(unsigned int i=0; i<4; i++) {
             for(unsigned int j=0; j<header->getNumberOfPointsByReturn(i); j++) {
@@ -67,9 +63,6 @@ namespace LAS {
                 }
                 points.push_back(point);
             }
-            #ifdef DEBUG
-            std::cout<<"File pointer at: "<<fileStream->tellp()<<std::endl;
-            #endif
 
         }
     }
@@ -100,11 +93,11 @@ namespace LAS {
 
     void LAS_File::saveTo(std::ofstream* outputStream) {
         this->header->saveTo(outputStream);
-        for(std::vector<LAS::VariableLengthRecord>::iterator i=records.begin(); i!=records.end(); ++i){
-            i->saveTo(outputStream);
+        for (auto &record : records) {
+            record.saveTo(outputStream);
         }
-        for(std::vector<LAS::PointDataRecord>::iterator i=points.begin(); i!=points.end(); ++i){
-            i->saveTo(outputStream, header->getPointDataFormat());
+        for (auto &point : points) { //std::vector<LAS::PointDataRecord>::iterator
+            point.saveTo(outputStream, header->getPointDataFormat());
         }
     }
 
@@ -116,18 +109,4 @@ namespace LAS {
         this->header->increasePointDataOffset(vlrecord->size());
         this->records.push_back(*vlrecord);
     }
-
-#ifdef DEBUG
-    void LAS_File::debug_test() {
-        int count=0;
-        for(std::vector<LAS::PointDataRecord>::iterator i=points.begin(); i!=points.end() || count<10; ++i){
-            std::cout<<"Point "<<count<<" is:"<<std::endl;
-            std::cout<<"x = "<<i->getX()*header->getOffset(LAS::AXIS::X_AXIS)<<std::endl;
-            std::cout<<"y = "<<i->getY()*header->getOffset(LAS::AXIS::Y_AXIS)<<std::endl;
-            std::cout<<"z = "<<i->getZ()*header->getOffset(LAS::AXIS::Z_AXIS)<<std::endl;
-            std::cout<<std::endl;
-            count++;
-        }
-    }
-    #endif
 }
