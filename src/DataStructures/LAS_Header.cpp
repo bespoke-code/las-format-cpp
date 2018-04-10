@@ -111,20 +111,23 @@ namespace LAS {
 
     double LAS_Header::getOffset(AXIS axis) {
         if (axis == LAS::AXIS::X_AXIS) return this->x_offset;
-        if (axis == LAS::AXIS::Y_AXIS) return this->y_offset;
-        if (axis == LAS::AXIS::Z_AXIS) return this->z_offset;
+        else if (axis == LAS::AXIS::Y_AXIS) return this->y_offset;
+        else if (axis == LAS::AXIS::Z_AXIS) return this->z_offset;
+        else return -1.0;
     }
 
     double LAS_Header::getMinimum(AXIS axis) {
         if (axis == LAS::AXIS::X_AXIS) return this->x_min;
-        if (axis == LAS::AXIS::Y_AXIS) return this->y_min;
-        if (axis == LAS::AXIS::Z_AXIS) return this->z_min;
+        else if (axis == LAS::AXIS::Y_AXIS) return this->y_min;
+        else if (axis == LAS::AXIS::Z_AXIS) return this->z_min;
+        else return -1.0;
     }
 
     double LAS_Header::getMaximum(AXIS axis) {
         if (axis == LAS::AXIS::X_AXIS) return this->x_max;
-        if (axis == LAS::AXIS::Y_AXIS) return this->y_max;
-        if (axis == LAS::AXIS::Z_AXIS) return this->z_max;
+        else if (axis == LAS::AXIS::Y_AXIS) return this->y_max;
+        else if (axis == LAS::AXIS::Z_AXIS) return this->z_max;
+        else return -1.0;
     }
 
     void LAS_Header::saveTo(std::ofstream *outputFile) {
