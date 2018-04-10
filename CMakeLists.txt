@@ -10,7 +10,7 @@ set(SOURCE_FILES
         src/DataStructures/LAS_Header.cpp
         src/DataStructures/PointDataRecord.cpp
         src/DataStructures/VariableLengthRecord.cpp
-        )
+        src/DataStructures/VLR_Structs.h)
 
 include_directories(
         src/DataStructures/

@@ -6,6 +6,7 @@
 #define LAS_READER_VARIABLELENGTHRECORD_H
 
 #include <fstream>
+#include "VLR_Structs.h"
 
 namespace LAS {
 
@@ -16,16 +17,6 @@ namespace LAS {
         CLASSIFICATION_LOOKUP = 0,
         HISTOGRAM = 2,
         TEXT_AREA_DESCRIPTION = 3
-    };
-
-    struct KeyEntry {
-        unsigned short keyID, TIFFTagLocation, count, value_offset;
-    };
-
-    struct GeoKeys {
-        unsigned short keyDirectoryVersion;
-        unsigned short keyRevision, minorRevision, numberOfKeys;
-        KeyEntry* entries;
     };
 
     class VariableLengthRecord {
