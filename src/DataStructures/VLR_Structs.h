@@ -5,31 +5,34 @@
 #ifndef LAS_READER_VLR_STRUCTS_H
 #define LAS_READER_VLR_STRUCTS_H
 
-struct KeyEntry {
-    unsigned short keyID, TIFFTagLocation, count, value_offset;
-};
+namespace LAS {
 
-struct Classification {
-    unsigned char classNumber;
-    char description[15];
-};
+    struct KeyEntry {
+        unsigned short keyID, TIFFTagLocation, count, value_offset;
+    };
 
-struct GeoKeys {
-    unsigned short keyDirectoryVersion;
-    unsigned short keyRevision, minorRevision, numberOfKeys;
-    KeyEntry* entries;
-};
+    struct Classification {
+        unsigned char classNumber;
+        char description[15];
+    };
 
-struct GeoParamsTagRecord {
-    double *values;
-};
+    struct GeoKeys {
+        unsigned short keyDirectoryVersion;
+        unsigned short keyRevision, minorRevision, numberOfKeys;
+        KeyEntry *entries;
+    };
 
-struct GeoASCIIParamsTag {
-    char *values;
-};
+    struct GeoParamsTagRecord {
+        double *values;
+    };
 
-struct ClassificationLookup {
-    Classification records[255];
-};
+    struct GeoASCIIParamsTag {
+        char *values;
+    };
 
+    struct ClassificationLookup {
+        Classification records[255];
+    };
+
+}
 #endif //LAS_READER_VLR_STRUCTS_H

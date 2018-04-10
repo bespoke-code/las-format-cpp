@@ -8,6 +8,7 @@
 #include <fstream>
 #include "VLR_Structs.h"
 
+
 namespace LAS {
 
     enum RECORD_TYPE : unsigned short {
