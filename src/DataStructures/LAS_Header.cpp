@@ -19,7 +19,9 @@ namespace LAS {
         global_encoding = 0;
         version.major = 1;
         version.minor = 2;
+        std::memset(system_identifier, 0, sizeof(system_identifier));
         std::strcpy(system_identifier, "");
+        std::memset(generating_software, 0, sizeof(generating_software));
         std::strcpy(generating_software, "las-format-cpp-library\0");
         std::time_t timer = std::time(NULL);
         std::tm *timePtr = std::localtime(&timer);
@@ -28,7 +30,7 @@ namespace LAS {
         size = 227;
         offset_to_point_data = 227;
         variable_length_records_count = 0;
-        point_data_format = LAS::POINT_DATA_FORMAT::FORMAT_0;
+        point_data_format = (unsigned char) LAS::POINT_DATA_FORMAT::FORMAT_0;
         point_data_record_length = (unsigned short) LAS::POINT_DATA_SIZE::POINT_DATA_FORMAT_0_SIZE;
         number_of_point_records = 0;
         for(int i=0; i<5; i++)
@@ -44,12 +46,15 @@ namespace LAS {
 
     LAS_Header::LAS_Header(std::fstream* fileStream) {
         char buffer[227];
+        std::memset(buffer, 0, sizeof(buffer));
         fileStream->read(buffer, 227);
 
         // pointer to elements from byte-formatted file
         void* item = buffer;
 
         std::strncpy((char*)item, this->signature, 4);
+        if(std::strcmp("LASF", signature) != 0)
+            std::strncpy(signature, "LASF", 4);
         source_id = *((unsigned short*)(item + 4));
         global_encoding = *((unsigned short*)(item + 6));
         guid_data.data1 = *((unsigned int*)(item + 8));
@@ -65,7 +70,7 @@ namespace LAS {
         size = *((unsigned short*)(item + 94));
         offset_to_point_data = *((unsigned int*)(item + 96));
         variable_length_records_count = *((unsigned int*)(item + 100));
-        point_data_format = (POINT_DATA_FORMAT) *((unsigned char*)(item + 104));
+        point_data_format = *((unsigned char*)(item + 104));
         std::cout<<"Point data format size: "<<(sizeof(POINT_DATA_FORMAT))<<std::endl;
         point_data_record_length = *((unsigned short*)(item + 105));
         number_of_point_records = *((unsigned int*)(item + 107));
@@ -90,7 +95,7 @@ namespace LAS {
         return this->offset_to_point_data;
     }
 
-    LAS::POINT_DATA_FORMAT LAS_Header::getPointDataFormat() {
+    unsigned char LAS_Header::getPointDataFormat() {
         return this->point_data_format;
     }
 
@@ -109,7 +114,7 @@ namespace LAS {
             return 0;
     }
 
-    double LAS_Header::getOffset(AXIS axis) {
+    double LAS_Header::offset(AXIS axis) {
         if (axis == LAS::AXIS::X_AXIS) return this->x_offset;
         else if (axis == LAS::AXIS::Y_AXIS) return this->y_offset;
         else if (axis == LAS::AXIS::Z_AXIS) return this->z_offset;
@@ -136,6 +141,24 @@ namespace LAS {
         }
         //TODO: change this to something more sane?
         outputFile->write((const char*)this, sizeof(LAS::LAS_Header));
+        //outputFile->write(signature, sizeof(signature));
+        //*outputFile << source_id;
+        ////outputFile->write((const char*) source_id, sizeof(source_id));
+        //*outputFile << global_encoding;
+        //outputFile->write((const char*) &version, sizeof(version));
+        //outputFile->write(system_identifier, sizeof(system_identifier));
+        //outputFile->write(generating_software, sizeof(generating_software));
+        //*outputFile << creation_day << creation_year << size << offset_to_point_data << variable_length_records_count;
+        //*outputFile << point_data_format;
+        //*outputFile << point_data_record_length << number_of_point_records;
+//
+        //for (unsigned int i : number_of_points_by_return)
+        //    *outputFile << i;
+        //*outputFile << x_scale_factor  << y_scale_factor << z_scale_factor;
+        //*outputFile << x_offset  << y_offset << z_offset;
+        //*outputFile << x_max  << x_min;
+        //*outputFile << y_max  << y_max;
+        //*outputFile << z_max  << z_min;
     }
 
     void LAS_Header::setPointCount(unsigned int amount) {
@@ -176,10 +199,21 @@ namespace LAS {
     }
 
     void LAS_Header::setPointFormat(POINT_DATA_FORMAT format) {
-        this->point_data_format = format;
+        this->point_data_format = (unsigned char) format;
     }
 
     void LAS_Header::increasePointDataOffset(unsigned int amount) {
         this->offset_to_point_data += amount;
+    }
+
+    double LAS_Header::scaleFactor(AXIS axis) {
+        if (axis == LAS::AXIS::X_AXIS) return this->x_scale_factor;
+        else if (axis == LAS::AXIS::Y_AXIS) return this->y_scale_factor;
+        else if (axis == LAS::AXIS::Z_AXIS) return this->z_scale_factor;
+        else return 1.0;
+    }
+
+    unsigned short LAS_Header::getSize() {
+        return size;
     }
 }

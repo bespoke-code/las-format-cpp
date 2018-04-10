@@ -5,7 +5,13 @@
 #include "PointDataRecord.h"
 namespace LAS {
     PointDataRecord::PointDataRecord() {
-
+        this->gps_time = 0;
+        this->classification = 0;
+        this->intensity = 0;
+        this->colour.blue = 0;
+        this->colour.red = 0;
+        this->colour.green = 0;
+        x = y = z = 0;
     }
 
     int PointDataRecord::getX() {

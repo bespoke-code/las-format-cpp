@@ -46,7 +46,7 @@ namespace LAS {
         unsigned int offset_to_point_data;
         unsigned int variable_length_records_count;
 
-        POINT_DATA_FORMAT point_data_format;
+        unsigned char point_data_format;
         unsigned short point_data_record_length;
 
         unsigned int number_of_point_records;
@@ -71,11 +71,12 @@ namespace LAS {
         LAS_Header();
         LAS_Header(std::fstream *fileStream);
 
-        double getOffset(AXIS axis);
+        double offset(AXIS axis);
         double getMinimum(AXIS axis);
         double getMaximum(AXIS axis);
+        unsigned short getSize();
         unsigned int getOffsetToPointData();
-        LAS::POINT_DATA_FORMAT getPointDataFormat();
+        unsigned char getPointDataFormat();
         unsigned int getNumberOfPointRecords();
         unsigned int getPointDataRecordLength();
         unsigned int getNumberOfPointsByReturn(int ret);
@@ -88,6 +89,7 @@ namespace LAS {
         void increasePointDataOffset(unsigned int amount);
         void setMinimum(AXIS axis, double min);
         void setMaximum(AXIS axis, double max);
+        double scaleFactor(AXIS axis);
 
         void saveTo(std::ofstream *outputFile);
 

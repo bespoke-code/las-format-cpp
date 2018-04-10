@@ -18,10 +18,12 @@ namespace LAS {
     LAS_File::LAS_File(std::fstream *fileStream) {
         this->header = new LAS_Header(fileStream);
 
-        while(fileStream->tellp() <= header->getOffsetToPointData()-1) {
-            LAS::VariableLengthRecord vlr(fileStream);
-            // add new VLR to list
-            records.push_back(vlr);
+        if(header->getOffsetToPointData() > header->getSize()) {
+            while (fileStream->tellp() <= header->getOffsetToPointData() - 1) {
+                LAS::VariableLengthRecord vlr(fileStream);
+                // add new VLR to list
+                records.push_back(vlr);
+            }
         }
 
         PointDataRecord point;
@@ -31,20 +33,22 @@ namespace LAS {
                 fileStream->read((char *) &point, (std::streamsize) LAS::POINT_DATA_SIZE::POINT_DATA_FORMAT_0_SIZE);
 
                 switch (header->getPointDataFormat()) {
-                    case LAS::POINT_DATA_FORMAT::FORMAT_0:
+                    case (unsigned char) LAS::POINT_DATA_FORMAT::FORMAT_0:
                         break;
-                    case LAS::POINT_DATA_FORMAT::FORMAT_1:
+                    case (unsigned char) LAS::POINT_DATA_FORMAT::FORMAT_1:
                         // setting GPS time only
                         point.setGPSTime(fileStream);
                         break;
-                    case LAS::POINT_DATA_FORMAT::FORMAT_2:
+                    case (unsigned char) LAS::POINT_DATA_FORMAT::FORMAT_2:
                         // setting RGB only
                         point.setRGB(fileStream);
                         break;
-                    case LAS::POINT_DATA_FORMAT::FORMAT_3:
+                    case (unsigned char) LAS::POINT_DATA_FORMAT::FORMAT_3:
                         // order is important!
                         point.setGPSTime(fileStream);
                         point.setRGB(fileStream);
+                        break;
+                    default:
                         break;
                 }
                 points.push_back(point);
@@ -59,18 +63,30 @@ namespace LAS {
     void LAS_File::addPoint(PointDataRecord *point) {
         points.push_back(*point);
 
-        if(point->getX() > header->getMaximum(LAS::AXIS::X_AXIS))
+        double x_scale = header->scaleFactor(LAS::AXIS::X_AXIS);
+        double y_scale = header->scaleFactor(LAS::AXIS::Y_AXIS);
+        double z_scale = header->scaleFactor(LAS::AXIS::Z_AXIS);
+
+        double x_offset = header->offset(LAS::AXIS::X_AXIS);
+        double y_offset = header->offset(LAS::AXIS::Y_AXIS);
+        double z_offset = header->offset(LAS::AXIS::Z_AXIS);
+
+        double x_point = (double)point->getX() * x_scale + x_offset;
+        double y_point = (double)point->getY() * y_scale + y_offset;
+        double z_point = (double)point->getZ() * z_scale + z_offset;
+
+        if(x_point > header->getMaximum(LAS::AXIS::X_AXIS))
             header->setMaximum(LAS::AXIS::X_AXIS, point->getX());
-        if(point->getY() > header->getMaximum(LAS::AXIS::Y_AXIS))
+        if(y_point > header->getMaximum(LAS::AXIS::Y_AXIS))
             header->setMaximum(LAS::AXIS::Y_AXIS, point->getY());
-        if(point->getZ() > header->getMaximum(LAS::AXIS::Z_AXIS))
+        if(z_point > header->getMaximum(LAS::AXIS::Z_AXIS))
             header->setMaximum(LAS::AXIS::Z_AXIS, point->getZ());
 
-        if(point->getX() < header->getMinimum(LAS::AXIS::X_AXIS))
+        if(x_point < header->getMinimum(LAS::AXIS::X_AXIS))
             header->setMinimum(LAS::AXIS::X_AXIS, point->getX());
-        if(point->getY() < header->getMinimum(LAS::AXIS::Y_AXIS))
+        if(y_point < header->getMinimum(LAS::AXIS::Y_AXIS))
             header->setMinimum(LAS::AXIS::Y_AXIS, point->getY());
-        if(point->getZ() < header->getMinimum(LAS::AXIS::Z_AXIS))
+        if(z_point < header->getMinimum(LAS::AXIS::Z_AXIS))
             header->setMinimum(LAS::AXIS::Z_AXIS, point->getZ());
 
         this->header->incrementPointCount();
@@ -82,7 +98,7 @@ namespace LAS {
             record.saveTo(outputStream);
         }
         for (auto &point : points) { //std::vector<LAS::PointDataRecord>::iterator
-            point.saveTo(outputStream, header->getPointDataFormat());
+            point.saveTo(outputStream, (LAS::POINT_DATA_FORMAT) header->getPointDataFormat());
         }
     }
 

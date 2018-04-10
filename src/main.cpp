@@ -5,7 +5,11 @@
 
 int main(int argc, char **argv) {
 
-    std::fstream fileStream("/home/vdx2/Desktop/LAS/libLAS_1.2.las", std::ios::binary | std::ios::in);
+    //std::fstream fileStream("/home/vdx2/Desktop/LAS/libLAS_1.2.las", std::ios::binary | std::ios::in);
+    //LAS::LAS_File las_file(&fileStream);
+    //fileStream.close();
+
+    std::fstream fileStream("/home/vdx2/Desktop/testFile2_LAS.las", std::ios::binary | std::ios::in);
     LAS::LAS_File las_file(&fileStream);
     fileStream.close();
 
@@ -13,7 +17,6 @@ int main(int argc, char **argv) {
     LAS::PointDataRecord point;
 
     int x, y, z;
-    // double gpsTime;
     LAS::Colour color{0, 0, 0};
 
     randomPoints.setPointFormat(LAS::POINT_DATA_FORMAT::FORMAT_2);
@@ -35,11 +38,12 @@ int main(int argc, char **argv) {
         randomPoints.addPoint(&point);
     }
 
-    std::ofstream output("/home/vdx2/Desktop/testFile1_LAS.las", std::ios::binary);
+    std::ofstream output("/home/vdx2/Desktop/testFile1_LAS1.las", std::ios::binary);
     las_file.saveTo(&output);
-    std::ofstream output1("/home/vdx2/Desktop/testFile2_LAS.las", std::ios::binary);
+    std::ofstream output1("/home/vdx2/Desktop/testFile2_LAS1.las", std::ios::binary);
     randomPoints.saveTo(&output1);
     output.close();
     output1.close();
+
     return 0;
 }
