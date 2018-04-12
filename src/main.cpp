@@ -25,10 +25,10 @@ int main(int argc, char **argv) {
     std::random_device random_device; // create object for seeding
     std::mt19937 engine{random_device()}; // create engine and seed it
     std::uniform_int_distribution<> dist(INT32_MIN,INT32_MAX); // create distribution for integers with [min; max] range
-    for(int i=0; i<1000; ++i) {
-        x = dist(engine)%1000000;
-        y = dist(engine)%1000000;
-        z = dist(engine)%1000000;
+    for(int i=0; i<100000; ++i) {
+        x = dist(engine)%10000;
+        y = dist(engine)%10000;
+        z = dist(engine)%10000;
 
         color.red = (unsigned short)(dist(engine)%255);
         color.green = (unsigned short)(dist(engine)%255);

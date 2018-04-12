@@ -6,6 +6,7 @@
 #define LAS_READER_POINTDATARECORD_H
 
 #include <fstream>
+#include <iostream>
 #include "LAS_Structs.h"
 
 namespace LAS {
@@ -17,11 +18,26 @@ namespace LAS {
         unsigned short number_of_returns:3;
         unsigned short scan_direction:1;
         unsigned short edge_of_flight_line:1;
+        void serialize(std::ofstream& outputStream) {
+            std::cout << (return_no <<5 | number_of_returns << 2 | scan_direction << 1 | edge_of_flight_line) << " ";
+            unsigned char data = 0;
+            data = data | (return_no & 0x00FF) << 5;
+            data = data | (number_of_returns & 0x00FF) << 2;
+            data = data | (scan_direction & 0x00FF) << 1;
+            data = data | (edge_of_flight_line & 0x00FF) << 1;
+            std::cout << "concatenated value: " << (unsigned int) data << std::endl;
+            outputStream.write((const char*) &data, 1);
+        }
     };
 
 
     struct Colour {
         unsigned short red, green, blue;
+        void serialize(std::ofstream& outputStream) {
+            outputStream.write((const char*) &red, sizeof(red));
+            outputStream.write((const char*) &green, sizeof(green));
+            outputStream.write((const char*) &blue, sizeof(blue));
+        }
     };
 
 

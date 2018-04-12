@@ -3,6 +3,9 @@
 //
 
 #include "PointDataRecord.h"
+#include <iostream>
+
+
 namespace LAS {
 
     PointDataRecord::PointDataRecord() {
@@ -36,20 +39,30 @@ namespace LAS {
     }
 
     void PointDataRecord::serialize(std::ofstream& outputStream, LAS::POINT_DATA_FORMAT format) {
-        outputStream.write((const char*)this, (std::streamsize) LAS::POINT_DATA_SIZE::POINT_DATA_FORMAT_0_SIZE);
+        outputStream.write((const char*) &x, sizeof(x));
+        outputStream.write((const char*) &y, sizeof(y));
+        outputStream.write((const char*) &z, sizeof(z));
+        outputStream.write((const char*) &intensity, sizeof(intensity));
+        lidar_scan_properties.serialize(outputStream);
+        //outputStream.write((const char*) &lidar_scan_properties, sizeof(lidar_scan_properties));
+        outputStream.write((const char*) &classification, sizeof(classification));
+        outputStream.write((const char*) &scan_angle_rank, sizeof(scan_angle_rank));
+        outputStream.write((const char*) &user_data, sizeof(user_data));
+        outputStream.write((const char*) &point_source_id, sizeof(point_source_id));
 
+        std::cout << outputStream.tellp() << std::endl;
         switch (format) {
             case LAS::POINT_DATA_FORMAT::FORMAT_0:
                 break;
             case LAS::POINT_DATA_FORMAT::FORMAT_1:
-                outputStream.write((char*) &gps_time, sizeof(double));
+                outputStream.write((const char*) &gps_time, sizeof(gps_time));
                 break;
             case LAS::POINT_DATA_FORMAT::FORMAT_2:
-                outputStream.write((char*) &colour, sizeof(LAS::Colour));
+                colour.serialize(outputStream);
                 break;
             case LAS::POINT_DATA_FORMAT::FORMAT_3:
-                outputStream.write((char*) &gps_time, sizeof(double));
-                outputStream.write((char*) &colour, sizeof(LAS::Colour));
+                outputStream.write((const char*) &gps_time, sizeof(double));
+                colour.serialize(outputStream);
                 break;
             default:
                 break;

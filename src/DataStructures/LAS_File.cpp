@@ -101,16 +101,12 @@ namespace LAS {
 
     void LAS_File::serialize(std::ofstream& outputStream) {
 
-        std::cout << "Put pointer at: " << outputStream.tellp() << " before saving the header." << std::endl;
         this->header->serialize(outputStream);
-        std::cout << "Put pointer at: " << outputStream.tellp() << " after saving the header." << std::endl;
         for (auto &record : records) {
             record.serialize(outputStream);
         }
-        std::cout << "Put pointer at: " << outputStream.tellp() << " after saving the VLRs." << std::endl;
         for (auto &point : points) { //std::vector<LAS::PointDataRecord>::iterator
             point.serialize(outputStream, (LAS::POINT_DATA_FORMAT) header->getPointDataFormat());
-            std::cout << "Put pointer at: " << outputStream.tellp() << " after saving a point." << std::endl;
         }
     }
 
