@@ -16,11 +16,23 @@ namespace LAS {
         unsigned short data2;
         unsigned short data3;
         unsigned char data4[8];
+
+        void serialize(std::ofstream &outputStream){
+            outputStream.write((const char*) &data1, sizeof(unsigned int));
+            outputStream.write((const char*) &data2, sizeof(unsigned short));
+            outputStream.write((const char*) &data3, sizeof(unsigned short));
+            outputStream.write((const char*) data4, 8*sizeof(unsigned char));
+
+        }
     };
 
     struct Version {
         unsigned char major;
         unsigned char minor;
+        void serialize(std::ofstream &outputStream) {
+            outputStream.write((const char*) &major, sizeof(major));
+            outputStream.write((const char*) &minor, sizeof(minor));
+        }
     };
 
     enum struct AXIS : std::int8_t {

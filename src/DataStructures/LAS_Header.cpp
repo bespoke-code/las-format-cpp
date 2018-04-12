@@ -139,40 +139,50 @@ namespace LAS {
         if(!outputFile.is_open()){
             std::cout << "Stream is not open! NOT writing to disk."<<std::endl;
         }
-        //TODO: change this to something more sane?
-        //outputFile->write((const char*)this, sizeof(LAS::LAS_Header));
         outputFile.write(signature, sizeof(signature));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the signature." << std::endl;
-        outputFile << source_id;
+        outputFile.write((const char*) &source_id, sizeof(source_id));
         std::cout << "Size of source id: " << sizeof(source_id) << " and size of u_short: " << sizeof(unsigned short) << std::endl;
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the source ID." << std::endl;
-        //outputFile->write((const char*) source_id, sizeof(source_id));
-        outputFile << global_encoding;
+        outputFile.write((const char*) &global_encoding, sizeof(global_encoding));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the global encoding." << std::endl;
-        outputFile.write((const char*) &version, sizeof(Version));
+        guid_data.serialize(outputFile);
+        version.serialize(outputFile);
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the Version." << std::endl;
         outputFile.write(system_identifier, sizeof(system_identifier));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the system_identifier." << std::endl;
         outputFile.write(generating_software, sizeof(generating_software));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the generating_software." << std::endl;
-        outputFile << creation_day << creation_year << size << offset_to_point_data << variable_length_records_count;
+        outputFile.write((const char*) &creation_day, sizeof(creation_day));
+        outputFile.write((const char*) &creation_year, sizeof(creation_year));
+        outputFile.write((const char*) &size, sizeof(size));
+        outputFile.write((const char*) &offset_to_point_data, sizeof(offset_to_point_data));
+        outputFile.write((const char*) &variable_length_records_count, sizeof(variable_length_records_count));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the creation date, size, offset to pcl data and vlr count." << std::endl;
-        outputFile << point_data_format;
+        outputFile.write((const char*) &point_data_format, sizeof(point_data_format));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the point_data_format." << std::endl;
-        outputFile << point_data_record_length << number_of_point_records;
+        outputFile.write((const char*) &point_data_record_length, sizeof(point_data_record_length));
+        outputFile.write((const char*) &number_of_point_records, sizeof(number_of_point_records));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the number_of_point_records." << std::endl;
        for (unsigned int i : number_of_points_by_return)
-            outputFile << i;
+           outputFile.write((const char*) &i, sizeof(i));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the number_of_points_by_return." << std::endl;
-        outputFile << x_scale_factor  << y_scale_factor << z_scale_factor;
+        outputFile.write((const char*) &x_scale_factor, sizeof(x_scale_factor));
+        outputFile.write((const char*) &y_scale_factor, sizeof(y_scale_factor));
+        outputFile.write((const char*) &z_scale_factor, sizeof(z_scale_factor));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the axis_scale_factor." << std::endl;
-        outputFile << x_offset  << y_offset << z_offset;
+        outputFile.write((const char*) &x_offset, sizeof(x_offset));
+        outputFile.write((const char*) &y_offset, sizeof(y_offset));
+        outputFile.write((const char*) &z_offset, sizeof(z_offset));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the axis offsets." << std::endl;
-        outputFile << x_max  << x_min;
+        outputFile.write((const char*) &x_max, sizeof(x_max));
+        outputFile.write((const char*) &x_min, sizeof(x_min));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the x_max_min." << std::endl;
-        outputFile << y_max  << y_max;
+        outputFile.write((const char*) &y_max, sizeof(y_max));
+        outputFile.write((const char*) &y_min, sizeof(y_min));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the y_max_min." << std::endl;
-        outputFile << z_max  << z_min;
+        outputFile.write((const char*) &z_max, sizeof(z_max));
+        outputFile.write((const char*) &z_min, sizeof(z_min));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the z_max_min." << std::endl;
     }
 
