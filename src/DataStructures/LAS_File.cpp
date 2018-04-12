@@ -15,11 +15,13 @@ namespace LAS {
         this->header = new LAS_Header();
     }
 
-    LAS_File::LAS_File(std::fstream *fileStream) {
+    LAS_File::LAS_File(std::fstream& fileStream) {
         this->header = new LAS_Header(fileStream);
+        std::cout << "Get pointer at: " << fileStream.tellg() << " after reading the header." << std::endl;
+        std::cout << "Put pointer at: " << fileStream.tellp() << " after reading the header." << std::endl;
 
         if(header->getOffsetToPointData() > header->getSize()) {
-            while (fileStream->tellp() <= header->getOffsetToPointData() - 1) {
+            while (fileStream.tellp() <= header->getOffsetToPointData() - 1) {
                 LAS::VariableLengthRecord vlr(fileStream);
                 // add new VLR to list
                 records.push_back(vlr);
@@ -27,10 +29,12 @@ namespace LAS {
         }
 
         PointDataRecord point;
+        std::cout << "Get pointer at: " << fileStream.tellg() << " after reading ALL variable length records." << std::endl;
+        std::cout << "Put pointer at: " << fileStream.tellp() << " after reading ALL variable length records." << std::endl;
 
         for(unsigned int i=0; i<4; i++) {
             for(unsigned int j=0; j<header->getNumberOfPointsByReturn(i); j++) {
-                fileStream->read((char *) &point, (std::streamsize) LAS::POINT_DATA_SIZE::POINT_DATA_FORMAT_0_SIZE);
+                fileStream.read((char *) &point, (std::streamsize) LAS::POINT_DATA_SIZE::POINT_DATA_FORMAT_0_SIZE);
 
                 switch (header->getPointDataFormat()) {
                     case (unsigned char) LAS::POINT_DATA_FORMAT::FORMAT_0:
@@ -52,6 +56,9 @@ namespace LAS {
                         break;
                 }
                 points.push_back(point);
+                std::cout << "Get pointer at: " << fileStream.tellg() << " after reading a point." << std::endl;
+                std::cout << "Put pointer at: " << fileStream.tellp() << " after reading a point." << std::endl;
+
             }
         }
     }
@@ -92,13 +99,18 @@ namespace LAS {
         this->header->incrementPointCount();
     }
 
-    void LAS_File::saveTo(std::ofstream* outputStream) {
-        this->header->saveTo(outputStream);
+    void LAS_File::serialize(std::ofstream& outputStream) {
+
+        std::cout << "Put pointer at: " << outputStream.tellp() << " before saving the header." << std::endl;
+        this->header->serialize(outputStream);
+        std::cout << "Put pointer at: " << outputStream.tellp() << " after saving the header." << std::endl;
         for (auto &record : records) {
-            record.saveTo(outputStream);
+            record.serialize(outputStream);
         }
+        std::cout << "Put pointer at: " << outputStream.tellp() << " after saving the VLRs." << std::endl;
         for (auto &point : points) { //std::vector<LAS::PointDataRecord>::iterator
-            point.saveTo(outputStream, (LAS::POINT_DATA_FORMAT) header->getPointDataFormat());
+            point.serialize(outputStream, (LAS::POINT_DATA_FORMAT) header->getPointDataFormat());
+            std::cout << "Put pointer at: " << outputStream.tellp() << " after saving a point." << std::endl;
         }
     }
 

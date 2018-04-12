@@ -69,7 +69,7 @@ namespace LAS {
 
     public:
         LAS_Header();
-        LAS_Header(std::fstream *fileStream);
+        LAS_Header(std::fstream& fileStream);
 
         double offset(AXIS axis);
         double getMinimum(AXIS axis);
@@ -91,7 +91,7 @@ namespace LAS {
         void setMaximum(AXIS axis, double max);
         double scaleFactor(AXIS axis);
 
-        void saveTo(std::ofstream *outputFile);
+        void serialize(std::ofstream &outputFile);
 
     };
 }

@@ -23,7 +23,7 @@ namespace LAS {
         std::strcpy(system_identifier, "");
         std::memset(generating_software, 0, sizeof(generating_software));
         std::strcpy(generating_software, "las-format-cpp-library\0");
-        std::time_t timer = std::time(NULL);
+        std::time_t timer = std::time(nullptr);
         std::tm *timePtr = std::localtime(&timer);
         creation_day = (unsigned short) timePtr->tm_yday;
         creation_year = (unsigned short) (timePtr->tm_year + 1900);
@@ -33,8 +33,8 @@ namespace LAS {
         point_data_format = (unsigned char) LAS::POINT_DATA_FORMAT::FORMAT_0;
         point_data_record_length = (unsigned short) LAS::POINT_DATA_SIZE::POINT_DATA_FORMAT_0_SIZE;
         number_of_point_records = 0;
-        for(int i=0; i<5; i++)
-            number_of_points_by_return[i] = 0;
+        for (unsigned int &i : number_of_points_by_return)
+            i = 0;
         x_scale_factor = 0.001;
         y_scale_factor = 0.001;
         z_scale_factor = 0.001;
@@ -44,10 +44,10 @@ namespace LAS {
         x_max = x_min = y_max = y_min = z_max = z_min = 0.0;
     }
 
-    LAS_Header::LAS_Header(std::fstream* fileStream) {
+    LAS_Header::LAS_Header(std::fstream &fileStream) {
         char buffer[227];
         std::memset(buffer, 0, sizeof(buffer));
-        fileStream->read(buffer, 227);
+        fileStream.read(buffer, 227);
 
         // pointer to elements from byte-formatted file
         void* item = buffer;
@@ -135,30 +135,45 @@ namespace LAS {
         else return -1.0;
     }
 
-    void LAS_Header::saveTo(std::ofstream *outputFile) {
-        if(!outputFile->is_open()){
+    void LAS_Header::serialize(std::ofstream& outputFile) {
+        if(!outputFile.is_open()){
             std::cout << "Stream is not open! NOT writing to disk."<<std::endl;
         }
         //TODO: change this to something more sane?
-        outputFile->write((const char*)this, sizeof(LAS::LAS_Header));
-        //outputFile->write(signature, sizeof(signature));
-        //*outputFile << source_id;
-        ////outputFile->write((const char*) source_id, sizeof(source_id));
-        //*outputFile << global_encoding;
-        //outputFile->write((const char*) &version, sizeof(version));
-        //outputFile->write(system_identifier, sizeof(system_identifier));
-        //outputFile->write(generating_software, sizeof(generating_software));
-        //*outputFile << creation_day << creation_year << size << offset_to_point_data << variable_length_records_count;
-        //*outputFile << point_data_format;
-        //*outputFile << point_data_record_length << number_of_point_records;
-//
-        //for (unsigned int i : number_of_points_by_return)
-        //    *outputFile << i;
-        //*outputFile << x_scale_factor  << y_scale_factor << z_scale_factor;
-        //*outputFile << x_offset  << y_offset << z_offset;
-        //*outputFile << x_max  << x_min;
-        //*outputFile << y_max  << y_max;
-        //*outputFile << z_max  << z_min;
+        //outputFile->write((const char*)this, sizeof(LAS::LAS_Header));
+        outputFile.write(signature, sizeof(signature));
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the signature." << std::endl;
+        outputFile << source_id;
+        std::cout << "Size of source id: " << sizeof(source_id) << " and size of u_short: " << sizeof(unsigned short) << std::endl;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the source ID." << std::endl;
+        //outputFile->write((const char*) source_id, sizeof(source_id));
+        outputFile << global_encoding;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the global encoding." << std::endl;
+        outputFile.write((const char*) &version, sizeof(Version));
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the Version." << std::endl;
+        outputFile.write(system_identifier, sizeof(system_identifier));
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the system_identifier." << std::endl;
+        outputFile.write(generating_software, sizeof(generating_software));
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the generating_software." << std::endl;
+        outputFile << creation_day << creation_year << size << offset_to_point_data << variable_length_records_count;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the creation date, size, offset to pcl data and vlr count." << std::endl;
+        outputFile << point_data_format;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the point_data_format." << std::endl;
+        outputFile << point_data_record_length << number_of_point_records;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the number_of_point_records." << std::endl;
+       for (unsigned int i : number_of_points_by_return)
+            outputFile << i;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the number_of_points_by_return." << std::endl;
+        outputFile << x_scale_factor  << y_scale_factor << z_scale_factor;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the axis_scale_factor." << std::endl;
+        outputFile << x_offset  << y_offset << z_offset;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the axis offsets." << std::endl;
+        outputFile << x_max  << x_min;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the x_max_min." << std::endl;
+        outputFile << y_max  << y_max;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the y_max_min." << std::endl;
+        outputFile << z_max  << z_min;
+        std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the z_max_min." << std::endl;
     }
 
     void LAS_Header::setPointCount(unsigned int amount) {

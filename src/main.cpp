@@ -5,13 +5,14 @@
 
 int main(int argc, char **argv) {
 
-    //std::fstream fileStream("/home/vdx2/Desktop/LAS/libLAS_1.2.las", std::ios::binary | std::ios::in);
+    std::fstream fileStream("/home/vdx2/Desktop/LAS/libLAS_1.2.las", std::ios::binary | std::ios::in);
+    LAS::LAS_File las_file(fileStream);
+    fileStream.close();
+
+    //std::fstream fileStream("/home/vdx2/Desktop/testFile2_LAS.las", std::ios::binary | std::ios::in);
+    //std::cout << "Get pointer at: " << fileStream.tellg() << std::endl;
     //LAS::LAS_File las_file(&fileStream);
     //fileStream.close();
-
-    std::fstream fileStream("/home/vdx2/Desktop/testFile2_LAS.las", std::ios::binary | std::ios::in);
-    LAS::LAS_File las_file(&fileStream);
-    fileStream.close();
 
     LAS::LAS_File randomPoints;
     LAS::PointDataRecord point;
@@ -39,9 +40,9 @@ int main(int argc, char **argv) {
     }
 
     std::ofstream output("/home/vdx2/Desktop/testFile1_LAS1.las", std::ios::binary);
-    las_file.saveTo(&output);
+    las_file.serialize(output);
     std::ofstream output1("/home/vdx2/Desktop/testFile2_LAS1.las", std::ios::binary);
-    randomPoints.saveTo(&output1);
+    randomPoints.serialize(output1);
     output.close();
     output1.close();
 

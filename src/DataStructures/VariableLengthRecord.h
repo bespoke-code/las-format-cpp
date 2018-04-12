@@ -30,13 +30,13 @@ namespace LAS {
         void *contents;
 
     public:
-        VariableLengthRecord(std::fstream *fileStream);
+        VariableLengthRecord(std::fstream &fileStream);
         VariableLengthRecord(LAS::RECORD_TYPE type);
         ~VariableLengthRecord();
         char *getContents();
         int size();
         LAS::RECORD_TYPE type();
-        void saveTo(std::ofstream* outputStream);
+        void serialize(std::ofstream &outputStream);
     };
 }
 
