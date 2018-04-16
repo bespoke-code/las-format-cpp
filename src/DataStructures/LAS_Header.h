@@ -96,6 +96,9 @@ namespace LAS {
         void setPointFormat(LAS::POINT_DATA_FORMAT format);
 
         void setPointCount(unsigned int amount);
+        void setSystemID(char* name);
+        void setGeneratingSoftware(char* name);
+        void setCurrentDate();
         void incrementPointCount();
         void decrementPointCount();
         void increasePointDataOffset(unsigned int amount);

@@ -164,8 +164,8 @@ namespace LAS {
         outputFile.write((const char*) &point_data_record_length, sizeof(point_data_record_length));
         outputFile.write((const char*) &number_of_point_records, sizeof(number_of_point_records));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the number_of_point_records." << std::endl;
-       for (unsigned int i : number_of_points_by_return)
-           outputFile.write((const char*) &i, sizeof(i));
+        for (unsigned int i : number_of_points_by_return)
+            outputFile.write((const char*) &i, sizeof(i));
         std::cout << "Put pointer at: " << outputFile.tellp() << " after saving the number_of_points_by_return." << std::endl;
         outputFile.write((const char*) &x_scale_factor, sizeof(x_scale_factor));
         outputFile.write((const char*) &y_scale_factor, sizeof(y_scale_factor));
@@ -240,5 +240,20 @@ namespace LAS {
 
     unsigned short LAS_Header::getSize() {
         return size;
+    }
+
+    void LAS_Header::setSystemID(char *name) {
+        std::strncpy(this->system_identifier, name, 32);
+    }
+
+    void LAS_Header::setGeneratingSoftware(char *name) {
+        std::strncpy(this->generating_software, name, 32);
+    }
+
+    void LAS_Header::setCurrentDate() {
+        std::time_t timer = std::time(nullptr);
+        std::tm *timePtr = std::localtime(&timer);
+        creation_day = (unsigned short) timePtr->tm_yday;
+        creation_year = (unsigned short) (timePtr->tm_year + 1900);
     }
 }

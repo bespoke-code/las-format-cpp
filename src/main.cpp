@@ -1,18 +1,17 @@
 #include <iostream>
 #include <fstream>
 #include <random>
+#include <cstring>
 #include "DataStructures/LAS_File.h"
 
 int main(int argc, char **argv) {
 
-    std::fstream fileStream("/home/vdx2/Desktop/LAS/libLAS_1.2.las", std::ios::binary | std::ios::in);
+    std::string filename;
+    filename = "/home/vdx2/Desktop/LAS/park-ljumfer-color-test.las";
+
+    std::fstream fileStream(filename, std::ios::binary | std::ios::in);
     LAS::LAS_File las_file(fileStream);
     fileStream.close();
-
-    //std::fstream fileStream("/home/vdx2/Desktop/testFile2_LAS.las", std::ios::binary | std::ios::in);
-    //std::cout << "Get pointer at: " << fileStream.tellg() << std::endl;
-    //LAS::LAS_File las_file(&fileStream);
-    //fileStream.close();
 
     LAS::LAS_File randomPoints;
     LAS::PointDataRecord point;

@@ -101,6 +101,10 @@ namespace LAS {
 
     void LAS_File::serialize(std::ofstream& outputStream) {
 
+        // Modify LAS file with software credentials
+        header->setSystemID("Bespoke LAS Library");
+        header->setGeneratingSoftware("las-format-cpp");
+        header->setCurrentDate();
         this->header->serialize(outputStream);
         for (auto &record : records) {
             record.serialize(outputStream);
